@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  mongodb:
+    image: "mongo:3.6"
+    ports:
+      - "27017:27017"
+    volumes:
+      - "mongodb_configdb:/data-master/configdb"
+      - "mongodb_db:/data-master/db"
+
+  elasticsearch:
+    image: "elasticsearch:5.6-alpine"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - "es_data:/usr/share/elasticsearch/data-master"
+volumes:
+  mongodb_configdb:
+  mongodb_db:
+  es_data:
