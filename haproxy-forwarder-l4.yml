@@ -1,0 +1,34 @@
+listen stats 
+  bind :9090 
+  mode http
+  stats enable  
+  stats hide-version 
+  stats realm Haproxy\ Statistics
+  stats uri /haproxy_stats 
+
+defaults
+  log     global
+  mode    tcp
+  timeout connect 5000
+  timeout client  50000
+  timeout server  50000
+
+frontend forwarder_endpoint_messages
+  bind :9191
+  default_backend backend_graylog_forwarder_service_messages
+
+frontend forwarder_endpoint_config
+  bind :9192
+  default_backend backend_graylog_forwarder_service_config
+
+backend backend_graylog_forwarder_service_messages
+  balance roundrobin
+  server server1 server-host-1:13301 check  maxconn 20
+  server server2 server-host-2:13301 check  maxconn 20
+
+
+backend backend_graylog_forwarder_service_config
+  balance roundrobin
+  server server1 server-host-1:13302 check  maxconn 20
+  server server2 server-host-2:13302 check  maxconn 20
+
