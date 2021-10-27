@@ -1,0 +1,43 @@
+
+global
+  log stdout local0
+  maxconn 50000
+
+defaults
+  log global
+  maxconn 3000
+#  mode http
+  max-keep-alive-queue 10
+  option clitcpka
+  timeout connect 10s
+  timeout client 30s
+  timeout server 30s
+  option httplog
+  option logasap
+  option http-use-htx
+
+listen stats
+  bind :9090
+  mode http
+  stats enable
+  stats hide-version
+  stats realm Haproxy\ Statistics
+  stats uri /haproxy_stats
+
+
+frontend fe_mysite_msgs
+  bind :9191
+  default_backend be_servers_msgs
+
+frontend fe_mysite_config
+  bind :9192
+  default_backend be_servers_config
+
+backend be_servers_msgs
+  balance roundrobin
+  server server1 localhost:13301 check  maxconn 20
+
+backend be_servers_config
+  balance roundrobin
+  server server1 localhost:13302 check  maxconn 20
+
